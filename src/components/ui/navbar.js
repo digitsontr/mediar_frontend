@@ -62,10 +62,22 @@ const Navbar = () => {
       addNotification(notification);
     };
 
+    const handleClickOutsideDropdown = (event) => {
+      // Dropdown menüsü açıksa ve tıklanan öğe dropdown menüsü değilse dropdown'ı kapat
+      if (logoutDropdownOpen && !event.target.closest('.dropdown-menu')) {
+        setLogoutDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutsideDropdown);
     newSocket.on("new_notification", handleNewNotification);
 
-    return () => newSocket.off("new_notification", handleNewNotification);
-  }, [addNotification]);
+    return () => 
+    {
+      newSocket.off("new_notification", handleNewNotification);
+      document.removeEventListener('mousedown', handleClickOutsideDropdown);
+    }
+  }, [addNotification, logoutDropdownOpen]);
 
   const handleLogoutClick = () => {
     setShowLogoutModal(true);
@@ -136,8 +148,7 @@ const Navbar = () => {
                       className={`nav-item dropdown ${
                         logoutDropdownOpen ? "show" : ""
                       }`}
-
-                      style={{alignItems: "center", display: "flex"}}
+                      style={{ alignItems: "center", display: "flex" }}
                     >
                       <div>
                         {(
@@ -158,8 +169,8 @@ const Navbar = () => {
                               ""
                             }
                             style={{
-                              maxWidth: "30px",
-                              maxHeight: "30px",
+                              maxWidth: "35px",
+                              maxHeight: "35px",
                               borderRadius: "50%",
                               marginRight: "10px", // Resim ve metin arasında boşluk bırakır
                             }}
@@ -175,8 +186,8 @@ const Navbar = () => {
                               ""
                             }`}
                             style={{
-                              maxWidth: "100px",
-                              maxHeight: "100px",
+                              maxWidth: "35px",
+                              maxHeight: "35px",
                               borderRadius: "50%",
                               marginRight: "10px",
                             }}
@@ -184,22 +195,24 @@ const Navbar = () => {
                         )}
                       </div>
 
-                      <a
-                        className="nav-link dropdown-toggle text-light"
-                        id="navbarDropdownProfile"
-                        role="button"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded={logoutDropdownOpen}
-                        onClick={toggleLogoutDropdown}
-                      >
-                        {JSON.parse(
-                          ((window || {}).localStorage || {}).user || ""
-                        ).username ||
-                          "" ||
-                          user.username ||
-                          ""}
-                      </a>
+                      <div className={`nav-item dropdown ${logoutDropdownOpen ? "show" : ""}`}>
+                        <a
+                          className="nav-link dropdown-toggle text-light"
+                          id="navbarDropdownProfile"
+                          role="button"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded={logoutDropdownOpen}
+                          onClick={toggleLogoutDropdown}
+                        >
+                          {JSON.parse(
+                            ((window || {}).localStorage || {}).user || ""
+                          ).username ||
+                            "" ||
+                            user.username ||
+                            ""}
+                        </a>
+                      </div>
 
                       <div
                         className={`dropdown-menu ${

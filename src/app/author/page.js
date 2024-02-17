@@ -37,7 +37,7 @@ function Author(authorId) {
     } catch (error) {
       console.error("Article listesi alınırken hata oluştu:", error);
 
-      //window.location.href = '/login';
+      window.location.href = '/login';
     }
 
     try {
@@ -57,7 +57,7 @@ function Author(authorId) {
     } catch (error) {
       console.error("Article listesi alınırken hata oluştu:", error);
 
-      //window.location.href = '/login';
+      window.location.href = '/login';
     }
 
     try {
@@ -71,13 +71,13 @@ function Author(authorId) {
         }
       );
 
-      console.log("Following List : ", (response.data || {}).followings || []);
+      console.log("1 Following List : ", (response.data || {}).followings || []);
 
       setFollowings((response.data || {}).followings || []);
     } catch (error) {
       console.error("Article listesi alınırken hata oluştu:", error);
 
-      //window.location.href = '/login';
+      window.location.href = '/login';
     }
 
     setViewToProfilePage("articles");

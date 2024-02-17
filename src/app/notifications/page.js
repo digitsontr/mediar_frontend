@@ -15,14 +15,14 @@ const NotificationsPage = () => {
     isModalOpen: false,
   });
 
-  const currentUserIdStr = JSON.stringify(
-    (JSON.parse(((window || {}).localStorage || {}).user || "{}") || {})[
-      "id"
-    ] || 0
-  );
+  const [currentUserIdStr, setCurrentUserIdStr] = useState();
+  const [currentUserName, setcurrentUserName] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
+      setCurrentUserIdStr((JSON.parse(((window || {}).localStorage || {}).user || "{}") || {})["id"] || 0);
+      setcurrentUserName((JSON.parse(((window || {}).localStorage || {}).user || "{}") || {})["username"] || 0);
+
       if (window.localStorage.token == undefined) {
         window.location.href = "/login";
       }
@@ -94,7 +94,7 @@ const NotificationsPage = () => {
   };
 
   return (
-    <div className="container my-4">
+    <div className="container col-md-6">
       <NotificationList
         notifications={state.notifications}
         onSelectNotification={handleNotificationClick}
@@ -102,6 +102,7 @@ const NotificationsPage = () => {
       <NotificationModal
         notification={state.selectedNotification}
         show={state.isModalOpen}
+        username={currentUserName}
         onHide={() =>
           setState((prevState) => ({ ...prevState, isModalOpen: false }))
         }

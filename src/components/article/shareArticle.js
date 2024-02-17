@@ -29,7 +29,7 @@ const ArticleShareStarter = () => {
         onClick={openModal}
         >
       
-        {user || {}.image || "".indexOf("http") === 0 ? (
+        {((user || {}).image || "").indexOf("https:") === 0 ? (
           <>
           <img
             src={user.image}

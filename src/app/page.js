@@ -15,30 +15,6 @@ function MainPage() {
   const [activeTab, setActiveTab] = useState('followed');
 
   const fetchData = async () => {
-    /*
-    try {
-      let config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: 'https://7897-46-197-140-92.ngrok-free.app/api/beogs_devices',
-        headers: { 
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning" : true
-        }
-      };
-      
-      axios.request(config)
-      .then((response) => {
-        console.log("DATA PAPIL: ", response);
-      })
-      .catch((error) => {
-        console.log("ERROR PAPIL1: ", error);
-      });
-    } catch (e) {
-      console.log("ERROR PAPIL2: ", e);
-    }
-    */
-
     if (((window || {}).localStorage || {}).token == undefined) {
       window.location.href = "/login";
     }
@@ -51,7 +27,7 @@ function MainPage() {
         },
       });
 
-      console.log("DATA myfollowings: ", response);
+      console.log("DATA myfollowings articles: ", response);
       setArticlesOfFollowings(response.data || []);
     } catch (error) {
       console.error('Article listesi alınırken hata oluştu:', error);
@@ -67,7 +43,7 @@ function MainPage() {
         },
       });
 
-      console.log("DATA mynonfollowings : ", response);
+      console.log("DATA mynonfollowings articles: ", response);
       setArticlesOfNonFollowings(response.data || []);
     } catch (error) {
       console.error('Article listesi alınırken hata oluştu:', error);
@@ -79,6 +55,10 @@ function MainPage() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const onStatusChange = () => {
+    fetchData();
+  };
 
   const handleTabChange = (tabName) => {
     setActiveTab(tabName);
@@ -144,10 +124,10 @@ function MainPage() {
           <br />
 
           {activeTab === 'followed' && (
-            <ArticleList articles={articlesOfFollowings} />
+            <ArticleList articles={articlesOfFollowings} onStatusChange={onStatusChange} isAuthorFollowing={true}/>
           )}
           {activeTab === 'nonFollowed' && (
-            <ArticleList articles={articlesOfNonFollowings} />
+            <ArticleList articles={articlesOfNonFollowings} onStatusChange={onStatusChange} isAuthorFollowing={false} />
           )}
         </div>
       </div>

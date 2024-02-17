@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 function User({ user, onStatusChange, setViewToProfilePage }) {
-  // Yeni bir state değişkeni ve güncelleme fonksiyonu tanımlayın
-  const [isFollowing, setIsFollowing] = useState(user.isFollowingBack == false);
+  const [isFollowing, setIsFollowing] = useState(user.isFollowing);
 
   const toggleFollowStatus = async (action) => {
     console.log(`${action} fonksiyonu çağrıldı`);
@@ -20,16 +19,46 @@ function User({ user, onStatusChange, setViewToProfilePage }) {
 
     try {
       const response = await axios.request(config);
-      //console.log(response.data);
-      // İşlem başarılı olduktan sonra state'i güncelleyin
-      
-      onStatusChange();
 
-      setIsFollowing(action);      
+      console.log(`${action} fonksiyonu çağırıldı 3`);
+
+      console.log("ppppppppp", response.data);
+      // İşlem başarılı olduktan sonra state'i güncelleyin
+
+      if (action === "unfollow") {
+        setIsFollowing(false);
+      } else {
+        setIsFollowing(true);
+      }
+
+      onStatusChange();
+     
+      console.log(`${action} fonksiyonu başarılı 3`);
+
     } catch (error) {
+
       console.error(`Error during ${action}:`, error);
+
+      /*
+      if (error.response && error.response.status === 405) {
+        console.log(`${action} fonksiyonu başarısız: Method Not Allowed, ancak güncelleme yapıldı`);
+
+        if (action === "unfollow") {
+          setIsFollowing(false);
+        } else {
+          setIsFollowing(true);
+        }
+  
+        onStatusChange();
+      }
+      */
     }
   };
+
+  /*
+  const toUserDetailPage = async () => {
+
+  }*/
 
   return (
     <div
@@ -75,22 +104,27 @@ function User({ user, onStatusChange, setViewToProfilePage }) {
         <hr />
         <div>{user.username}</div>
         <br />
+        
         {isFollowing ? (
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => toggleFollowStatus("follow")}
-          >
-            Follow
-          </button>
+          ((JSON.parse(((window || {}).localStorage || {}).user || "{}").id || "") !== user.id) && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => toggleFollowStatus("unfollow")}
+            >
+              Unfollow
+            </button>
+          )
         ) : (
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={() => toggleFollowStatus("unfollow")}
-          >
-            Unfollow
-          </button>
+          ((JSON.parse(((window || {}).localStorage || {}).user || "{}").id || "") !== user.id) && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => toggleFollowStatus("follow")}
+            >
+              Follow
+            </button>
+          )
         )}
       </div>
     </div>

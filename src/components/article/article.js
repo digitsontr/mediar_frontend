@@ -5,9 +5,10 @@ const Article = ({
   article: initialArticle,
   onStatusChange,
   setViewToProfilePage,
+  isAuthorFollowing,
 }) => {
   const [article, setArticle] = useState(initialArticle);
-
+  const [isFollowing, setIsFollowing] = useState(isAuthorFollowing == false);
   const currentUserID =
     typeof window !== "undefined"
       ? JSON.parse(window.localStorage.getItem("user") || "{}").id
@@ -81,6 +82,34 @@ const Article = ({
     }
   };
 
+  const toggleFollowStatus = async (action, authorId) => {
+    console.log(`${action} fonksiyonu çağrıldı 2`);
+
+    const endpoint = `http://127.0.0.1:3000/auth/${action}/${authorId}`;
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: endpoint,
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token") || "",
+      },
+    };
+
+    try {
+      const response = await axios.request(config);
+      //console.log(response.data);
+      // İşlem başarılı olduktan sonra state'i güncelleyin
+
+      onStatusChange();
+
+      console.log(`${action} fonksiyonu başarılı 2`);
+
+      setIsFollowing(action);
+    } catch (error) {
+      console.error(`Error during ${action}:`, error);
+    }
+  };
+
   const handleRemoveClick = async () => {
     try {
       if (((window || {}).localStorage || {}).token == undefined) {
@@ -98,7 +127,7 @@ const Article = ({
         },
       });
 
-      //console.log("DATA : ", response);
+      console.log("DATA : ", response);
       //console.log("RESPONSE CODE : ", response.status);
 
       if (response.status == 200) {
@@ -123,44 +152,86 @@ const Article = ({
 
   return (
     <div className="card-body">
-      <div style={{ display: "flex", alignItems: "center" }}>
-        {article.authorImage || "".indexOf("http") === 0 ? (
-          <img
-            src={article.authorImage}
+      {( article.authorName !== undefined) && window.location.pathname !== "/profile" && (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {article.authorImage !== undefined && (
+            <img
+              src={
+                article.authorImage.indexOf("http") !== 0
+                  ? `data:image/jpeg;base64,${article.authorImage}`
+                  : article.authorImage
+              }
+              style={{
+                maxWidth: "100px",
+                maxHeight: "100px",
+                borderRadius: "50%",
+                marginRight: "10px",
+              }}
+            />
+          )}
+          <h5
+            onClick={() => (window.location.href = "/user/" + article.authorId)}
+            className="card-title"
+          >
+            {article.authorName}
+          </h5>
+          <div
             style={{
-              maxWidth: "100px",
-              maxHeight: "100px",
-              borderRadius: "50%",
-              marginRight: "10px", // Resim ve metin arasında boşluk bırakır
+              display: "flex",
+              alignItems: "flex-end",
+              width: "100%",
+              justifyContent: "flex-end",
             }}
-          />
-        ) : (
-          <img
-            src={`data:image/jpeg;base64,${article.authorImage}`}
-            style={{
-              maxWidth: "100px",
-              maxHeight: "100px",
-              borderRadius: "50%",
-              marginRight: "10px", // Resim ve metin arasında boşluk bırakır
-            }}
-          />
-        )}
+          >
+            {isFollowing ? (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => toggleFollowStatus("follow", article.authorId)}
+              >
+                Follow
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => toggleFollowStatus("unfollow", article.authorId)}
+              >
+                Unfollow
+              </button>
+            )}
+          </div>
 
-        <h5 className="card-title">{article.authorName}</h5>
-      </div>
-      <hr />
+          <hr />
+        </div>
+      )}
+      
       <p className="card-text">{article.content}</p>
-
       <div className="d-flex justify-content-between align-items-center">
         <ul className="list-group list-group-flush">
-          {(article.likedUsers || []).length + " liked"}
+          <>
+            {(article.likedUsers || []).length > 0 ? (
+              (article.likedUsers || []).length > 1 ? (
+                <>
+                  {(article.likedUsers || [])[0].username} and{" "}
+                  {(article.likedUsers || []).length - 1} others liked
+                </>
+              ) : (
+                <>{(article.likedUsers || [])[0].username} liked</>
+              )
+            ) : (
+              <>
+                {window.location.pathname === "/profile"
+                  ? "no likes yet"
+                  : "be the first to like"}
+              </>
+            )}
+          </>
         </ul>
         <small>{new Date(article.createdAt).toLocaleDateString()}</small>
       </div>
-
       <br />
-
-      {window.location.href.indexOf("profile") == -1 ? (
+      {window.location.href.indexOf("profile") === -1 ? (
         <button
           className={`btn ${
             isLikedByCurrentUser ? "btn-warning" : "btn-primary"
@@ -179,10 +250,8 @@ const Article = ({
           >
             Update
           </button>
-
           <br />
           <br />
-
           <button
             className={`btn`}
             onClick={handleRemoveClick}

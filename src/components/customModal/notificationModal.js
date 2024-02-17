@@ -1,11 +1,8 @@
 // components/NotificationModal.js
-import React from "react";
+import React, { useState } from "react";
 
-const NotificationModal = ({ notification, show, onHide }) => {
+const NotificationModal = ({ notification, show, onHide, username }) => {
   const now = new Date();
-  const username =
-    (JSON.parse(((window || {}).localStorage || {}).user || "{}") || {})
-      .username || "";
 
   return (
     <div
