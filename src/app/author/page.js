@@ -31,7 +31,7 @@ function Author(authorId) {
         }
       );
 
-      console.log("Article List : ", response);
+      //console.log("Article List : ", response);
 
       setArticles(response.data || []);
     } catch (error) {
@@ -51,7 +51,7 @@ function Author(authorId) {
         }
       );
 
-      console.log("Follower List : ", response);
+      //console.log("Follower List : ", response);
 
       setFollowers((response.data || {}).followers || []);
     } catch (error) {
@@ -71,7 +71,7 @@ function Author(authorId) {
         }
       );
 
-      console.log("1 Following List : ", (response.data || {}).followings || []);
+      //console.log("1 Following List : ", (response.data || {}).followings || []);
 
       setFollowings((response.data || {}).followings || []);
     } catch (error) {

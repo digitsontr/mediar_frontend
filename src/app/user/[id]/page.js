@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Article from "../../../components/article/article";
-import UserList from "../../../components/user/users";
 import User from "../../../components/user/user";
 
 const UserPage = () => {
@@ -30,7 +29,7 @@ const UserPage = () => {
         },
       });
 
-      console.log("DATA : ", response.data);
+      //console.log("DATA : ", response.data);
 
       setUser(response.data);
       setFollowers(response.data["Followers"]);
@@ -38,7 +37,7 @@ const UserPage = () => {
       setArticles(response.data["articles"]);
       setIsFollowing(response.data["isFollowing"]);
     } catch (error) {
-      console.log("ERROR : ", error);
+      //console.log("ERROR : ", error);
 
       if (
         error.response &&
@@ -50,7 +49,7 @@ const UserPage = () => {
   };
 
   const toggleFollowStatus = async (action, userId) => {
-    console.log(`${action} fonksiyonu çağrıldı 1`);
+    //console.log(`${action} fonksiyonu çağrıldı 1`);
 
     const endpoint = `http://127.0.0.1:3000/auth/${action}/${userId}`;
     let config = {
@@ -69,11 +68,11 @@ const UserPage = () => {
 
       onStatusChange();
 
-      console.log(`${action} fonksiyonu başarılı 1`);
+      //console.log(`${action} fonksiyonu başarılı 1`);
 
       setIsFollowing(action);
     } catch (error) {
-      console.error(`Error during ${action}:`, error);
+      //console.error(`Error during ${action}:`, error);
     }
   };
 

@@ -21,7 +21,7 @@ function Favorites() {
         },
       });
 
-      console.log("likedArticles response data : ", response.data);
+      //console.log("likedArticles response data : ", response.data);
       setArticles((response.data || {}).likedArticles || []);
     } catch (error) {
       //console.error('Article listesi alınırken hata oluştu:', error);

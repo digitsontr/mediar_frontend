@@ -8,7 +8,7 @@ const MessageView = ({ currentMessage }) => {
   const [messageText, setMessageText] = useState("");
 
   const sendMessage = () => {
-    console.log("Sending message:", messageText);
+    //console.log("Sending message:", messageText);
     // Burada mesaj gönderme işlemini gerçekleştirecek kodu ekleyin.
     // Örneğin, bir API isteği yaparak mesajı gönderebilirsiniz.
   };

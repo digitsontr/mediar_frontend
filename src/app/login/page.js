@@ -28,18 +28,18 @@ const Login = () => {
         formDataWithFile
       );
 
-      console.log("DATA : ", response);
+      //console.log("DATA : ", response);
 
       if (response.status == 200 && window.localStorage) {
         window.localStorage.token = response.data.token;
-        console.log("user 1 : ", response.data.user.name);
+        //console.log("user 1 : ", response.data.user.name);
 
         if (response.data && response.data.user) {
           window.localStorage.user = JSON.stringify((response.data || {}).user || {});
 
           setUser((response.data || {}).user || {});
 
-          console.log("user 11111111 : ");
+          //console.log("user 11111111 : ");
         }
 
         window.location.href = "/";
@@ -47,7 +47,7 @@ const Login = () => {
         //window.alert("giriş yapılırken hata")
       }
     } catch (error) {
-      console.error("giriş yapılırken hata oluştu:", error);
+      //console.error("giriş yapılırken hata oluştu:", error);
 
       window.alert("giriş yapılırken hata");
     }
@@ -75,34 +75,36 @@ const Login = () => {
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-6 offset-md-3">
-          <h2 className="mb-3 text-center">Giriş Yap</h2>
+          <h2 className="mb-3 text-center">LOGIN</h2>
+          <br />  
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="username">Kullanıcı Adı</label>
+              <label htmlFor="username">Username</label>
               <input
                 type="text"
                 className="form-control"
                 id="username"
                 name="username"
-                placeholder="Kullanıcı Adınızı Girin"
+                placeholder="Enter your username.."
                 value={formData.username}
                 onChange={handleInputChange}
               />
             </div>
+            <br />
             <div className="form-group">
-              <label htmlFor="password">Parola</label>
+              <label htmlFor="password">Password</label>
               <input
                 type="password"
                 className="form-control"
                 id="password"
                 name="password"
-                placeholder="Parolanızı Girin"
+                placeholder="Enter your password.."
                 value={formData.password}
                 onChange={handleInputChange}
               />
             </div>
             <button type="submit" className="btn btn-primary w-100 mt-3">
-              Giriş Yap
+              Login
             </button>
           </form>
 
@@ -121,7 +123,7 @@ const Login = () => {
           >
             <img
               src="../../google.png" // Google logosunun yolu buraya eklenmeli
-              alt="Google ile giriş yap"
+              alt="Sign in with Google"
               style={{
                 width: '20px', // veya ihtiyacınıza göre ayarlayın
                 height: '20px', // veya ihtiyacınıza göre ayarlayın
@@ -129,7 +131,7 @@ const Login = () => {
                 marginRight: '8px', // Logonun ve metnin arasında boşluk bırakır
               }}
             />
-            Google ile giriş yap
+            Sign in with Google
           </h3>
 
         </div>

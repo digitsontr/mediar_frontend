@@ -13,7 +13,7 @@ const ShareArticleModal = ({ isOpen, onClose }) => {
   */
 
   const shareArticle = async () => {
-    console.log("shareArticle fonksiyonu çağrıldı");
+    //console.log("shareArticle fonksiyonu çağrıldı");
 
     let data = new FormData();
     data.append("content", content);
@@ -32,13 +32,13 @@ const ShareArticleModal = ({ isOpen, onClose }) => {
     const response = await axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
+        //console.log(JSON.stringify(response.data));
         setContent("");
         onClose();
         //window.alert("Shared Successfully"); // Sayfayı yenilemek için
       })
       .catch((error) => {
-        console.log("error ", error);
+        //console.log("error ", error);
       });
   };
 

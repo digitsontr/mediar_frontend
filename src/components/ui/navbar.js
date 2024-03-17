@@ -9,19 +9,20 @@ import socketClient from "../../app/socketClient";
 import LogoutModal from "../customModal/logoutModal";
 
 const Navbar = () => {
-  const hasNotifications = useStore((state) => state.notifications.length > 0);
   const resetNotifications = useStore((state) => state.resetNotifications);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [logoutDropdownOpen, setLogoutDropdownOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [user, setUser] = useState("");
+  const [isNotifications, setIsNotifications] = useState(false);
+  const hasNotifications = useStore((state) => state.notifications.length > 0);
 
   const toggleLogoutDropdown = () => {
     setLogoutDropdownOpen(!logoutDropdownOpen);
   };
 
   const handleNotificationsClick = () => {
-    console.log("XXXXXXXXX");
+    //console.log("\nNAVBAR: HANDLE NOTIFICATION CLICK");
     resetNotifications();
   };
 
@@ -31,8 +32,20 @@ const Navbar = () => {
     window.location.href = "/login";
   };
 
+  const handleNewNotification = (notification) => {
+    console.log("\nNAVBAR: New notification: ", notification);
+    addNotification(notification);
+  };
+
   const cancelLogout = () => {
     setShowLogoutModal(false);
+  };
+
+  const handleClickOutsideDropdown = (event) => {
+    // Dropdown menüsü açıksa ve tıklanan öğe dropdown menüsü değilse dropdown'ı kapat
+    if (logoutDropdownOpen && !event.target.closest('.dropdown-menu')) {
+      setLogoutDropdownOpen(false);
+    }
   };
 
   useHydrateStore();
@@ -50,27 +63,33 @@ const Navbar = () => {
     );
   }, []);
 
+  
+  useEffect(() => {
+    //console.log("HASNOTIFICATION : ", hasNotifications);
+    // Bildirimler değiştiğinde `hasNotifications` değerini kontrol et
+    if (hasNotifications) {
+      //console.log("\nNAVBAR: NOTIFICATIONS HAS CHANGED!");
+      setIsNotifications(true);
+    } else {
+      //console.log("\nNAVBAR: NO NEW NOTIFICATIONS!");
+      setIsNotifications(false);
+    }
+  }, [hasNotifications]);
+  
+
   const addNotification = useStore((state) => state.addNotification);
+
   useEffect(() => {
     const currentUserIdStr = JSON.stringify(
       (JSON.parse(((window || {}).localStorage || {}).user || "{}") || {}).id ||
         0
     );
+
+    //console.log("\nNAVBAR: CURRENT USER ID : " +  currentUserIdStr);
     const newSocket = socketClient(currentUserIdStr);
-
-    const handleNewNotification = (notification) => {
-      addNotification(notification);
-    };
-
-    const handleClickOutsideDropdown = (event) => {
-      // Dropdown menüsü açıksa ve tıklanan öğe dropdown menüsü değilse dropdown'ı kapat
-      if (logoutDropdownOpen && !event.target.closest('.dropdown-menu')) {
-        setLogoutDropdownOpen(false);
-      }
-    };
+    newSocket.on("new_notification", handleNewNotification);
 
     document.addEventListener('mousedown', handleClickOutsideDropdown);
-    newSocket.on("new_notification", handleNewNotification);
 
     return () => 
     {
@@ -92,7 +111,7 @@ const Navbar = () => {
             href="/"
             style={{ marginLeft: "20%" }}
           >
-            MEDIAR
+            MEDIATLON
           </Link>
 
           <div className="collapse navbar-collapse" id="navbarNav">
@@ -121,7 +140,7 @@ const Navbar = () => {
               <li className="nav-item" onClick={handleNotificationsClick}>
                 <Link className="nav-link text-light" href="/notifications">
                   <i className="fas fa-bell"></i> Notifications
-                  {hasNotifications && (
+                  {isNotifications && (
                     <span className="notification-dot"></span>
                   )}
                 </Link>

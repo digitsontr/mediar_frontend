@@ -7,11 +7,12 @@ import ArticleList from "../components/article/articles";
 import TopicList from "../components/topic/topics";
 import ArticleShareStarter from "../components/article/shareArticle";
 
+import socketClient from "./socketClient";
+
 
 function MainPage() {
   const [articlesOfFollowings, setArticlesOfFollowings] = useState([]);
   const [articlesOfNonFollowings, setArticlesOfNonFollowings] = useState([]);
-
   const [activeTab, setActiveTab] = useState('followed');
 
   const fetchData = async () => {
@@ -27,10 +28,10 @@ function MainPage() {
         },
       });
 
-      console.log("DATA myfollowings articles: ", response);
+      //console.log("DATA myfollowings articles: ", response);
       setArticlesOfFollowings(response.data || []);
     } catch (error) {
-      console.error('Article listesi alınırken hata oluştu:', error);
+      //console.error('Article listesi alınırken hata oluştu:', error);
 
       window.location.href = "/login";
     }
@@ -43,10 +44,10 @@ function MainPage() {
         },
       });
 
-      console.log("DATA mynonfollowings articles: ", response);
+      //console.log("DATA mynonfollowings articles: ", response);
       setArticlesOfNonFollowings(response.data || []);
     } catch (error) {
-      console.error('Article listesi alınırken hata oluştu:', error);
+      //console.error('Article listesi alınırken hata oluştu:', error);
 
       window.location.href = "/login";
     }
@@ -97,6 +98,7 @@ function MainPage() {
           <h5 className="text-center">Topics</h5>
           <hr />
           <TopicList />
+          <br />  
           {/* Topics listesi */}
         </div>
 

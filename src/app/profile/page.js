@@ -33,7 +33,7 @@ function Profile() {
         }
       );
 
-      console.log("Article List : ", response);
+      //console.log("Article List : ", response);
 
       setArticles(response.data || []);
     } catch (error) {
@@ -53,11 +53,11 @@ function Profile() {
         }
       );
 
-      console.log("Follower List : ", response);
+      //console.log("Follower List : ", response);
 
       setFollowers((response.data || {}).followers || []);
     } catch (error) {
-      console.error("Article listesi alınırken hata oluştu:", error);
+      //console.error("Article listesi alınırken hata oluştu:", error);
 
       window.location.href = '/login';
     }
@@ -73,7 +73,7 @@ function Profile() {
         }
       );
 
-      console.log("2 Following List : ", (response.data || {}).followings || []);
+      //console.log("2 Following List : ", (response.data || {}).followings || []);
 
       setFollowings((response.data || {}).followings || []);
     } catch (error) {

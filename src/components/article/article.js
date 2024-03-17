@@ -19,7 +19,7 @@ const Article = ({
   );
 
   useEffect(() => {
-    console.log("XXXXXX");
+    //console.log("XXXXXX");
     setIsLikedByCurrentUser(
       currentUserID &&
         (article.likedUsers || []).some((user) => user.id === currentUserID)
@@ -83,7 +83,7 @@ const Article = ({
   };
 
   const toggleFollowStatus = async (action, authorId) => {
-    console.log(`${action} fonksiyonu çağrıldı 2`);
+    //console.log(`${action} fonksiyonu çağrıldı 2`);
 
     const endpoint = `http://127.0.0.1:3000/auth/${action}/${authorId}`;
     let config = {
@@ -102,7 +102,7 @@ const Article = ({
 
       onStatusChange();
 
-      console.log(`${action} fonksiyonu başarılı 2`);
+      //console.log(`${action} fonksiyonu başarılı 2`);
 
       setIsFollowing(action);
     } catch (error) {
@@ -127,7 +127,7 @@ const Article = ({
         },
       });
 
-      console.log("DATA : ", response);
+      //console.log("DATA : ", response);
       //console.log("RESPONSE CODE : ", response.status);
 
       if (response.status == 200) {

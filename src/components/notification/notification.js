@@ -41,7 +41,7 @@ const Notification = ({ notification, onSelectNotification }) => {
                 {timeSince(notification.time)}
               </small>
             </div>
-            <p className="mb-1">{notification.message}</p>
+            <p className="mb-1">{notification.message.split(" ").slice(1, notification.message.split(" ").length).join(" ")}</p>
           </div>
           <br />
         </div>

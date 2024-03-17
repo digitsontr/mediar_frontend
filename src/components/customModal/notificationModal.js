@@ -40,8 +40,7 @@ const NotificationModal = ({ notification, show, onHide, username }) => {
                 </p>
                 <p>
                   {notification.message.replace(
-                    username + " kullanıcısını",
-                    "sizi"
+                    username + " follows you"
                   )}
                 </p>
                 <small className="text-muted">

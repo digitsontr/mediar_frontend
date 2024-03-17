@@ -9,8 +9,8 @@ const GoogleLoginSuccess = () => {
     const token = params.get("token");
     const userDataObject = JSON.parse(params.get("userData") || "{}");
 
-    console.log("user in google success :", userDataObject);
-    console.log("token in google success :", token);
+    //console.log("user in google success :", userDataObject);
+    //console.log("token in google success :", token);
 
     if (userDataObject && window.localStorage) {
       window.localStorage.user = JSON.stringify(userDataObject);

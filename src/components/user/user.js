@@ -5,7 +5,7 @@ function User({ user, onStatusChange, setViewToProfilePage }) {
   const [isFollowing, setIsFollowing] = useState(user.isFollowing);
 
   const toggleFollowStatus = async (action) => {
-    console.log(`${action} fonksiyonu çağrıldı`);
+    //console.log(`${action} fonksiyonu çağrıldı`);
 
     const endpoint = `http://127.0.0.1:3000/auth/${action}/${user.id}`;
     let config = {
@@ -20,9 +20,9 @@ function User({ user, onStatusChange, setViewToProfilePage }) {
     try {
       const response = await axios.request(config);
 
-      console.log(`${action} fonksiyonu çağırıldı 3`);
+      //console.log(`${action} fonksiyonu çağırıldı 3`);
 
-      console.log("ppppppppp", response.data);
+      //console.log("ppppppppp", response.data);
       // İşlem başarılı olduktan sonra state'i güncelleyin
 
       if (action === "unfollow") {
@@ -33,11 +33,11 @@ function User({ user, onStatusChange, setViewToProfilePage }) {
 
       onStatusChange();
      
-      console.log(`${action} fonksiyonu başarılı 3`);
+      //console.log(`${action} fonksiyonu başarılı 3`);
 
     } catch (error) {
 
-      console.error(`Error during ${action}:`, error);
+      //console.error(`Error during ${action}:`, error);
 
       /*
       if (error.response && error.response.status === 405) {
@@ -87,6 +87,7 @@ function User({ user, onStatusChange, setViewToProfilePage }) {
         <img
           src={`data:image/jpeg;base64,${user.image}`}
           alt={`${user.name}'s Profile`}
+          onClick={() => (window.location.href = "/user/" + user.id)}
           style={{ maxWidth: "100px", maxHeight: "100px" }}
         />
       </div>

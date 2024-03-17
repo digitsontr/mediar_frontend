@@ -30,7 +30,7 @@ const Register = () => {
         formDataWithFile
       );
 
-      console.log("DATA : ", response);
+      //console.log("DATA : ", response);
 
       if (response.status == 200) {
         window.location.href = "/login";
