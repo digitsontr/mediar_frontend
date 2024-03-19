@@ -9,6 +9,9 @@ const Article = ({
 }) => {
   const [article, setArticle] = useState(initialArticle);
   const [isFollowing, setIsFollowing] = useState(isAuthorFollowing == false);
+  const [editMode, setEditMode] = useState(false); // Edit modu kontrolü ekledik
+  const [editedContent, setEditedContent] = useState(article.content); // Düzenlenen içeriği tutmak için state ekledik
+
   const currentUserID =
     typeof window !== "undefined"
       ? JSON.parse(window.localStorage.getItem("user") || "{}").id
@@ -19,7 +22,6 @@ const Article = ({
   );
 
   useEffect(() => {
-    //console.log("XXXXXX");
     setIsLikedByCurrentUser(
       currentUserID &&
         (article.likedUsers || []).some((user) => user.id === currentUserID)
@@ -71,10 +73,30 @@ const Article = ({
       if (((window || {}).localStorage || {}).token == undefined) {
         window.location.href = "/login";
       } else {
-        window.location.href = "/article/" + JSON.stringify(article.id);
+        // Makale güncelleme işlemi için axios veya fetch kullanabilirsiniz
+        const response = await axios.put(
+          `http://127.0.0.1:3000/articles/updateArticle/${article.id}`,
+          {
+            content: editedContent, // Düzenlenen içeriği güncelleyin
+          },
+          {
+            headers: {
+              Authorization:
+                "Bearer " + ((window || {}).localStorage || {}).token || "",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          // Güncelleme başarılı olduysa
+          //console.log("resp : ", response.data.updatedArticle);
+          setArticle(response.data.updatedArticle);
+          onStatusChange();
+          setEditMode(false); // Edit modunu kapatın
+        }
       }
     } catch (error) {
-      console.error("beğeni işleminde hata oluştu:", error);
+      console.error("güncelleme işleminde hata oluştu:", error);
 
       if (error.response && error.response.status === 401) {
         window.location.href = "/login";
@@ -152,84 +174,106 @@ const Article = ({
 
   return (
     <div className="card-body">
-      {( article.authorName !== undefined) && window.location.pathname !== "/profile" && (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          {article.authorImage !== undefined && (
-            <img
-              src={
-                article.authorImage.indexOf("http") !== 0
-                  ? `data:image/jpeg;base64,${article.authorImage}`
-                  : article.authorImage
-              }
-              style={{
-                maxWidth: "100px",
-                maxHeight: "100px",
-                borderRadius: "50%",
-                marginRight: "10px",
-              }}
-            />
-          )}
-          <h5
-            onClick={() => (window.location.href = "/user/" + article.authorId)}
-            className="card-title"
-          >
-            {article.authorName}
-          </h5>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              width: "100%",
-              justifyContent: "flex-end",
-            }}
-          >
-            {isFollowing ? (
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => toggleFollowStatus("follow", article.authorId)}
-              >
-                Follow
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => toggleFollowStatus("unfollow", article.authorId)}
-              >
-                Unfollow
-              </button>
+      {article.authorName !== undefined &&
+        window.location.pathname !== "/profile" && (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {article.authorImage !== undefined && (
+              <img
+                src={
+                  article.authorImage.indexOf("http") !== 0
+                    ? `data:image/jpeg;base64,${article.authorImage}`
+                    : article.authorImage
+                }
+                style={{
+                  maxWidth: "100px",
+                  maxHeight: "100px",
+                  borderRadius: "50%",
+                  marginRight: "10px",
+                }}
+              />
             )}
-          </div>
+            <h5
+              onClick={() =>
+                (window.location.href = "/user/" + article.authorId)
+              }
+              className="card-title"
+            >
+              {article.authorName}
+            </h5>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                width: "100%",
+                justifyContent: "flex-end",
+              }}
+            >
+              {isFollowing ? (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => toggleFollowStatus("follow", article.authorId)}
+                >
+                  Follow
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() =>
+                    toggleFollowStatus("unfollow", article.authorId)
+                  }
+                >
+                  Unfollow
+                </button>
+              )}
+            </div>
 
-          <hr />
+            <hr />
+          </div>
+        )}
+
+      <br />
+
+      {editMode ? (
+        <input
+          type="text"
+          value={editedContent}
+          onChange={(e) => setEditedContent(e.target.value)}
+          className="form-control"
+        />
+      ) : (
+        <p className="card-text">{article.content}</p>
+      )}
+
+      <hr />
+
+      {!editMode && (
+        <div className="d-flex justify-content-between align-items-center">
+          <ul className="list-group list-group-flush">
+            <>
+              {(article.likedUsers || []).length > 0 ? (
+                (article.likedUsers || []).length > 1 ? (
+                  <>
+                    {(article.likedUsers || [])[0].username} and{" "}
+                    {(article.likedUsers || []).length - 1} others liked
+                  </>
+                ) : (
+                  <>{(article.likedUsers || [])[0].username} liked</>
+                )
+              ) : (
+                <>
+                  {window.location.pathname === "/profile"
+                    ? "no likes yet"
+                    : "be the first to like"}
+                </>
+              )}
+            </>
+          </ul>
+          <small>{new Date(article.createdAt).toLocaleDateString()}</small>
         </div>
       )}
-      
-      <p className="card-text">{article.content}</p>
-      <div className="d-flex justify-content-between align-items-center">
-        <ul className="list-group list-group-flush">
-          <>
-            {(article.likedUsers || []).length > 0 ? (
-              (article.likedUsers || []).length > 1 ? (
-                <>
-                  {(article.likedUsers || [])[0].username} and{" "}
-                  {(article.likedUsers || []).length - 1} others liked
-                </>
-              ) : (
-                <>{(article.likedUsers || [])[0].username} liked</>
-              )
-            ) : (
-              <>
-                {window.location.pathname === "/profile"
-                  ? "no likes yet"
-                  : "be the first to like"}
-              </>
-            )}
-          </>
-        </ul>
-        <small>{new Date(article.createdAt).toLocaleDateString()}</small>
-      </div>
+
       <br />
       {window.location.href.indexOf("profile") === -1 ? (
         <button
@@ -243,13 +287,37 @@ const Article = ({
         </button>
       ) : (
         <div>
-          <button
-            className={`btn btn-primary`}
-            onClick={handleUpdateClick}
-            style={{ width: "100%" }}
-          >
-            Update
-          </button>
+          {editMode ? ( // Edit modunda değilse güncelleme butonunu göster
+            <div>
+              <button
+                style={{ width: "100%" }}
+                className="btn btn-success"
+                onClick={handleUpdateClick}
+              >
+                Complete Update
+              </button>
+
+              <br />
+              <br />
+
+              <button
+                style={{ width: "100%" }}
+                className="btn btn-danger"
+                onClick={(e) => setEditMode(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              className={`btn btn-primary`}
+              onClick={() => setEditMode(true)}
+              style={{ width: "100%" }}
+            >
+              Update
+            </button>
+          )}
+
           <br />
           <br />
           <button
