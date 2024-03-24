@@ -22,8 +22,17 @@ const Navbar = () => {
   };
 
   const handleNotificationsClick = () => {
-    //console.log("\nNAVBAR: HANDLE NOTIFICATION CLICK");
+    console.log("\nNAVBAR: HANDLE NOTIFICATION CLICK");
+    
+  
+    setIsNotifications(false);
+
     resetNotifications();
+    window.localStorage.firstLogin = false;
+
+    if (window.location.pathname === "/notifications") {
+      window.location.reload();
+    }
   };
 
   const confirmLogout = () => {
@@ -59,15 +68,19 @@ const Navbar = () => {
     setIsClient(true);
 
     setIsAuthenticated(
-      (token !== null || user !== null) && pathname !== "/login"
+      (token !== null || user !== null) && pathname !== "/login" && pathname !== "/register"
     );
+
+    if ( window.localStorage.firstLogin === 'true') {
+      setIsNotifications(true);
+    }
   }, []);
 
   
   useEffect(() => {
     //console.log("HASNOTIFICATION : ", hasNotifications);
     // Bildirimler değiştiğinde `hasNotifications` değerini kontrol et
-    if (hasNotifications) {
+    if (hasNotifications && ((window || {}).location || {}).pathname !== "/notifications") {
       //console.log("\nNAVBAR: NOTIFICATIONS HAS CHANGED!");
       setIsNotifications(true);
     } else {
@@ -140,7 +153,7 @@ const Navbar = () => {
               <li className="nav-item" onClick={handleNotificationsClick}>
                 <Link className="nav-link text-light" href="/notifications">
                   <i className="fas fa-bell"></i> Notifications
-                  {isNotifications && (
+                  {(isNotifications || window.localStorage.firstLogin === 'true') && window.location.pathname !== '/notifications' && (
                     <span className="notification-dot"></span>
                   )}
                 </Link>

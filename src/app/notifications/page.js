@@ -53,6 +53,8 @@ const NotificationsPage = () => {
       }
     };
 
+    {window.localStorage.firstLogin = false}
+
     fetchData();
   }, []);
 
